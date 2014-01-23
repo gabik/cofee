@@ -16,7 +16,7 @@ def send_to_branch(request):
 			cur_branch = branch_profile.objects.filter(id=request.POST['branch'])
 			if cur_branch is not None:
 				cur_branch = cur_branch[0]
-				return render(request, 'cofee/sent_to_branch.html', c)
+				return render(request, 'orders/sent_to_branch.html', c)
 			else:
 				error_flag=1
 		else:
@@ -34,5 +34,5 @@ def send_to_branch(request):
 
 	c['form']=form
 
-	return render(request, 'cofee/new_order.html',c)
+	return render(request, 'orders/new_order.html',c)
 
