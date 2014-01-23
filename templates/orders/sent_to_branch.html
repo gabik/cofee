@@ -1,30 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div id="login">
-        <h3>Login as Client</h3>
-        
-        <div id="form">
-                
-        {% if form.errors %}
-          <p class="error">Sorry, that's not a valid username or password</p>
-        {% endif %}
+{% if error %}
+  <div id="error">
+        <h3>{{ error }}</h3>
+  </div>
+{% endif %}
+<div id="order">
 
-        <form action='.' method='post'>{% csrf_token %}
-          {{ loginform.as_p }}
-<!--
-          <div><label for="username">User name:</label>
-          <input type="text" name="username" value="" id="username"></div>
-          <div><label for="password">Password:</label>
-          <input type="password" name="password" value="" id="password"></div>
-          <div>
-          <input type="submit" value="login" /></div>
-          <input type="hidden" name="next" value="{{ next }}" />
-        <form action='.' method='post'>
--->
-         <input type="submit" value="login">
-        </form>                
-        </div>
+<script src="http://localhost:8889/socket.io/socket.io.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script>
+
+        var socket = io.connect('http://localhost:8889');
+
+	socket.on('connect', function(){
+		socket.emit('addOrder', 99, {{ order_id }});
+	});
+
+</script>
+Thank you for your order, bitch!
 </div>
 {% endblock %}
 

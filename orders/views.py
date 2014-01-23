@@ -16,6 +16,7 @@ def send_to_branch(request):
 			cur_branch = branch_profile.objects.filter(id=request.POST['branch'])
 			if cur_branch is not None:
 				cur_branch = cur_branch[0]
+				c['order_id']=9
 				return render(request, 'orders/sent_to_branch.html', c)
 			else:
 				error_flag=1

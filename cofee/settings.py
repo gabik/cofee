@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SETTINGS_PATH = os.path.normpath(os.path.dirname(__file__))
+MEDIA_ROOT = os.path.join(SETTINGS_PATH, '../static')
+ADMIN_MEDIA_ROOT = '/usr/lib/python2.7/site-packages/Django-1.7.dev20140122212610-py2.7.egg/django/contrib/admin/static/admin'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
@@ -88,3 +90,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+  MEDIA_ROOT,  
+)

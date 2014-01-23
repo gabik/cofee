@@ -1,8 +1,11 @@
 //for test-build JSON for first login
 ordersJson = {"count":6,"orders":[{"id":345,"state":"nonready"},{"id":346,"state":"ready"},{"id":545,"state":"nonready"},{"id":645,"state":"nonready"},{"id":745,"state":"ready"},{"id":845,"state":"nonready"}]};
 
-var app = require('express').createServer()
-var io = require('socket.io').listen(app.listen(8888));
+//var app = require('express').createServer();
+var express = require("express");
+var app = express();
+var io = require('socket.io').listen(app.listen(8889));
+
 
 
 // routing
@@ -20,10 +23,6 @@ app.get('/menu.css', function (req, res) {
 
 app.get('/admin', function (req, res) {
   res.sendfile(__dirname + '/admin.html');
-});
-
-app.post('/new_order', function(req, res) {
-  console.log(req);
 });
 
 // branches which are currently connected to the system
@@ -69,6 +68,7 @@ io.sockets.on('connection', function (socket) {
 
 	// when the client emits 'addOrder', this listens and executes
 	socket.on('addOrder', function(branchID, orderID){
+		console.log(branches);
 		branches[branchID].emit('addOrder', orderID);
 	});
 
