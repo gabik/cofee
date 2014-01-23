@@ -1,0 +1,89 @@
+<HTML>
+<head>
+<link rel="stylesheet" type="text/css" href="orders.css">
+<link rel="stylesheet" type="text/css" href="menu.css">
+<title>orders test</title>
+</head>
+<body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script>
+	var socket = io.connect('http://coffe.kazav.net:8888');
+	var branchID = 99;
+
+	// on connection to server, ask for orders and let the server save your socket
+	socket.on('connect', function(){
+		// call the server-side function 'connectBranch' and send one parameter (branchID)
+		socket.emit('connectBranch', branchID);
+	});
+
+	// clean orders div (for test)
+	socket.on('clearOrders', function() {
+		$("#orders").empty();
+	});
+
+	// after connecting, we will get all orders with JSON format
+	socket.on('getAllOrders', function(ordersJson) {
+		$("#orders").empty();
+		var json = ordersJson; //JSON.parse(ordersJson);
+		var ordersCount = json.count;
+		var ordersArray = json.orders;
+		for (var i=0; i<ordersCount; i++) {
+			var orderState = ordersArray[i].state;
+			var orderID = ordersArray[i].id;
+			$("#orders").append("<div class=" + orderState  + " id=" + orderID + ">" + orderID + "</div>");
+		}
+	});
+
+	// listener, whenever the server emits 'updatechat', this updates the chat body
+	socket.on('addOrder', function (json) {
+        	$("#orders").append("<div class=nonready id=" + json + ">" + json + "</div>");
+	});
+
+	socket.on('deleteOrder', function (json) {
+		var oid = json.id;
+        	$("#"+oid).remove();
+	});
+
+	// listener, whenever the server emits 'updateusers', this updates the username list
+	socket.on('changeOrder', function(json) {
+		var orderid= json.id;
+		var orderst= json.status;
+		$("#"+orderid).attr('class', orderst);
+	});
+
+$(document).ready(function() {
+	$(document).on('click', '.ready, .nonready', function() {
+		$("#menu").show();
+		$("#orderid").html(this.id);
+		var orderstatus;
+		if (this.className == "ready") {
+			orderstatus="Ready";
+		} else if (this.className == "nonready") {
+			orderstatus="Not Ready";
+		}
+		$("#orderstatus").html(orderstatus);
+	});
+	
+	$("#cancelmenu").click(function() {$("#menu").hide();});
+
+	$("#menu").hide();
+
+	$("#doready, #dononready, #dodone").click(function() {
+		$("#menu").hide();
+		socket.emit('updateOrder', $("#orderid").html(), this.id);
+	});
+	
+});
+
+</script>
+ <div id="orders">
+ </div>
+ 
+ <div id="menu">
+  Order: <div id=orderid>0</div>
+  Status: <div id=orderstatus>null</div>
+  <div id=doready>READY</div> <div id=dononready>NON-READY</div> <div id=dodone>DONE</div>
+  <div id=cancelmenu>Cancel</dev>
+ </div>
+</body>

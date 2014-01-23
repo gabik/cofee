@@ -1,0 +1,33 @@
+#menu {
+    position: fixed;
+    left: 350px;
+    top: 20px;
+    width: 190px;
+    height: auto;
+    background: #aaf;
+}
+#orderid, #orderstatus {
+    display: inline-block;
+    font-weight: bold;
+}
+#doready {
+    position: relative;
+    left: 20px;
+    width: 100px;
+    background: #0f0;
+}
+
+#dononready {
+    position: relative;
+    left: 20px;
+    width: 100px;
+    background: #f00;
+}
+
+#dodone {
+    position: relative;
+    left: 20px;
+    width: 100px;
+    background: #fff;
+}
+

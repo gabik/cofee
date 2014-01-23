@@ -1,0 +1,26 @@
+<HTML>
+<head>
+<link rel="stylesheet" type="text/css" href="orders.css">
+<title>orders admin panel</title>
+</head>
+<body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script>
+	var socket = io.connect('http://coffe.kazav.net:8888');
+	var branchID = 99;
+
+
+$(document).ready(function() {
+	$("#add").click(function() {
+		socket.emit('addOrder', 99, prompt("Order ID"));
+	});
+
+	$("#clear").click(function() {
+		socket.emit('clearOrders', 99);
+	});
+});
+
+</script>
+99: <button type=button id=add>Add</button><button type=button id=clear>Clear</button><BR>
+</body>

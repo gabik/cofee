@@ -1,0 +1,19 @@
+#orders {
+    width: 300px;
+    height: auto;
+}
+.ready {
+    width: 50px;
+    height: 50px;
+    margin: 0 10px 10px 0;
+    float: left;
+    background: #0f0;
+}
+.nonready {
+    width: 50px;
+    height: 50px;
+    margin: 0 10px 10px 0;
+    float: left;
+    background: #f00;
+}
+
