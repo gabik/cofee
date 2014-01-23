@@ -27,7 +27,7 @@
 <body>
 	<div id="ribbon">
 		<span id="who">{% if user.is_anonymous %}Not Logged In{% else %}You are logged in as: {{ user }}{% endif %}</span>
-		<a href="/gabi">linkA</a> |
+		<a href="/orders/make_order">New Order</a> |
 		<a href="/king">linkB</a> | 
 		{% if user.is_anonymous %}<a href="/accounts/login/?next=/docs/">Login</a>{% else %}<a href="/account/logout/">Logout</a>{% endif %}
 	</div>
