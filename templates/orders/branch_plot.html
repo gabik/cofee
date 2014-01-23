@@ -1,15 +1,21 @@
-<HTML>
-<head>
-<link rel="stylesheet" type="text/css" href="orders.css">
-<link rel="stylesheet" type="text/css" href="menu.css">
-<title>orders test</title>
-</head>
-<body>
-<script src="/socket.io/socket.io.js"></script>
+
+{% extends "base.html" %}
+
+{% block content %}
+{% if error %}
+  <div id="error">
+        <h3>{{ error }}</h3>
+  </div>
+{% endif %}
+
+
+<link rel="stylesheet" type="text/css" href="/static/css/orders/orders.css">
+<link rel="stylesheet" type="text/css" href="/static/css/orders/menu.css">
+<script src="http://coffe.kazav.net:8889/socket.io/socket.io.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script>
 	var socket = io.connect('http://coffe.kazav.net:8889');
-	var branchID = 1;
+	var branchID = {{ branchID }};
 
 	// on connection to server, ask for orders and let the server save your socket
 	socket.on('connect', function(){
@@ -100,4 +106,4 @@ $(document).ready(function() {
   <div id=doready>READY</div> <div id=dononready>NON-READY</div> <div id=dodone>DONE</div>
   <div id=cancelmenu>Cancel</dev>
  </div>
-</body>
+{% endblock %}

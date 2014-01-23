@@ -29,7 +29,7 @@
 		<span id="who">{% if user.is_anonymous %}Not Logged In{% else %}You are logged in as: {{ user }}{% endif %}</span>
 		<a href="/orders/make_order">New Order</a> |
 		<a href="/king">linkB</a> | 
-		{% if user.is_anonymous %}<a href="/accounts/login/?next=/docs/">Login</a>{% else %}<a href="/account/logout/">Logout</a>{% endif %}
+		{% if user.is_anonymous %}<a href="/account/login-client/?next=/orders/make_order">Login</a>{% else %}<a href="/account/logout/">Logout</a>{% endif %}
 	</div>
 	<div id="content">
 		{% block content %}{% endblock %}

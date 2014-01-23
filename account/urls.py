@@ -3,7 +3,7 @@ from django.contrib.auth.views import login, logout, password_reset_confirm, pas
 from account import views
 
 urlpatterns = patterns('account.views',
-	(r'^login-branch/$', login, {'template_name': 'registration/login-branch.html'}),
+	(r'^login-branch/$', 'login_branch'),
 	(r'^login-client/$', 'login_client'),
 	(r'^logout/$', logout),
 	(r'^new/$', 'create_user'),

@@ -15,7 +15,7 @@
         var socket = io.connect('http://coffe.kazav.net:8889');
 
 	socket.on('connect', function(){
-		socket.emit('addOrder', 99, {{ order_id }});
+		socket.emit('addOrder', {{ branchID }}, {{ order_id }});
 	});
 
 </script>

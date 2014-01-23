@@ -17,6 +17,7 @@ def send_to_branch(request):
 			if cur_branch is not None:
 				cur_branch = cur_branch[0]
 				c['order_id']=9
+				c['branchID']=cur_branch.id
 				return render(request, 'orders/sent_to_branch.html', c)
 			else:
 				error_flag=1
@@ -37,3 +38,10 @@ def send_to_branch(request):
 
 	return render(request, 'orders/new_order.html',c)
 
+@login_required(login_url='/account/login-branch/')
+def my_branch(request):
+	c = {}
+	cur_profile = branch_profile.objects.filter(user=request.user)
+	if cur_profile:
+		c["branchID"] = cur_profile[0].id
+		return render(request, 'orders/branch_plot.html', c)
