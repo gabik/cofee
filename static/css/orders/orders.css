@@ -1,7 +1,6 @@
 #orders {
     width: 300px;
     height: auto;
-    border-right: thick solid #ff0000;
     margin-top: 20px;
 }
 .ready {
