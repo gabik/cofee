@@ -1,33 +1,39 @@
 #menu {
-    position: fixed;
-    left: 350px;
-    top: 20px;
-    width: 190px;
+    display: inline-block;
+    width: 250px;
     height: auto;
     background: #aaf;
+    margin-left: 50px;
 }
 #orderid, #orderstatus {
+    position: relative;
     display: inline-block;
     font-weight: bold;
 }
 #doready {
     position: relative;
-    left: 20px;
+    left: 30%;
     width: 100px;
+    height: 40px;
+    margin-top: 10px;
     background: #0f0;
 }
 
 #dononready {
     position: relative;
-    left: 20px;
+    left: 30%;
     width: 100px;
+    height: 40px;
+    margin-top: 10px;
     background: #f00;
 }
 
 #dodone {
     position: relative;
-    left: 20px;
+    left: 30%;
     width: 100px;
+    height: 40px;
+    margin-top: 10px;
     background: #fff;
 }
 
