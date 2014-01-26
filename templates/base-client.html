@@ -3,6 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<title>Orders system test</title>
+	<link rel="stylesheet" href="/static/sidr/stylesheets/jquery.sidr.dark.css">
 	<style type="text/css" media="screen">
 	    html, body, div {margin:0;padding:0;}
 		body {font-family: Verdana; font-size:10pt;}
@@ -25,7 +26,8 @@
 	</style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 	<script src="/static/knob/js/jquery.knob.js"></script>
-	<script src="/static/sldr/jquery.sidr.min.js"></script>
+	<script src="/static/sidr/jquery.sidr.min.js"></script>
+	<script src="/static/sidr/jquery.touchwipe.min.js"></script>
 </head>
 <body>
 	<div id="ribbon">
@@ -37,13 +39,88 @@
 	<div id="content">
 		{% block content %}{% endblock %}
 	</div>
-	<input type="text" value="1" class="dial" data-fgColor="#66CC66" data-angleOffset=-100 data-angleArc=200 data-displayPrevious=true data-thickness=".4" data-step=1 data-min=1 data-max=3> 
-	<input type="text" value="50" class="dial" data-fgColor="#66CC66" data-angleOffset=-100 data-angleArc=200 data-displayPrevious=true data-thickness=".4" data-step=50> 
-	<input type="text" value="1" class="dial" data-fgColor="#66CC66" data-angleOffset=-100 data-angleArc=200 data-displayPrevious=true data-thickness=".4" data-step=50> 
+	<input type=image value=2 class="strong" data-fgColor="#66CC66" data-angleOffset=-100 data-angleArc=200 data-displayPrevious=true data-thickness=".4" data-step=1 data-min=1 data-max=3 src="/static/img/orders/regular.png" displayInput=false readOnly=true> 
+	<input type=image value=2 class="size" data-fgColor="#66CC66" data-angleOffset=-100 data-angleArc=200 data-displayPrevious=true data-thickness=".4" data-step=1 data-min=1 data-max=3 src="/static/img/orders/medium.png" displayInput=false readOnly=true> 
+	<input type="text" value="3" class="qty" data-fgColor="#66CC66" data-angleOffset=-100 data-angleArc=200 data-displayPrevious=true data-thickness=".4" data-step=1 data-min=1 data-max=10> 
+
+
+<a id="simple-menu" href="#sidr">Toggle menu</a>
+<div id="sidr">
+  <!-- Your content -->
+  <ul>
+    <li><a href="#">List 1</a></li>
+    <li class="active"><a href="#">List 2</a></li>
+    <li><a href="#">List 3</a></li>
+  </ul>
+</div>
 
 <script>
 $(function() {
-    $(".dial").knob();
+	$(".strong").knob({ 'value':'2' });
+	$(".size").knob();
+	$(".qty").knob();
+	$(".strong").click(function(){
+		switch ($(".strong").val()) {
+			case "1":
+				$(".strong")
+					.val("2")
+					.trigger('change');
+				$(".strong").attr('src', '/static/img/orders/regular.png');
+				break;
+			case "2":
+				$(".strong")
+					.val("3")
+					.trigger('change');
+				$(".strong").attr('src', '/static/img/orders/strong.png');
+				break;
+			case "3":
+				$(".strong")
+					.val("1")
+					.trigger('change');
+				$(".strong").attr('src', '/static/img/orders/light.png');
+				break;
+		}
+	});
+
+	$(".size").click(function(){
+		switch ($(".size").val()) {
+			case "1":
+				$(".size")
+					.val("2")
+					.trigger('change');
+				$(".size").attr('src', '/static/img/orders/medium.png');
+				break;
+			case "2":
+				$(".size")
+					.val("3")
+					.trigger('change');
+				$(".size").attr('src', '/static/img/orders/big.png');
+				break;
+			case "3":
+				$(".size")
+					.val("1")
+					.trigger('change');
+				$(".size").attr('src', '/static/img/orders/small.png');
+				break;
+		}
+	});
+
+	/* $(window).touchwipe({
+        wipeLeft: function() {
+          // Close
+          $.sidr('close', 'sidr-main');
+        },
+        wipeRight: function() {
+          // Open
+          $.sidr('open', 'sidr-main');
+        },
+        preventDefaultEvents: false
+      });
+	*/
+
+	$(document).ready(function() {
+	  $('#simple-menu').sidr();
+	});
 });
 </script>
 
