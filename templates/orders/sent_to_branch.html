@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base-client.html" %}
 
 {% block content %}
 {% if error %}
@@ -9,7 +9,6 @@
 <div id="order">
 
 <script src="http://coffe.kazav.net:8889/socket.io/socket.io.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script>
 
         var socket = io.connect('http://coffe.kazav.net:8889');

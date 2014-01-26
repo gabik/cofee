@@ -1,5 +1,5 @@
 
-{% extends "base.html" %}
+{% extends "base-branch.html" %}
 
 {% block content %}
 {% if error %}
@@ -12,7 +12,6 @@
 <link rel="stylesheet" type="text/css" href="/static/css/orders/orders.css">
 <link rel="stylesheet" type="text/css" href="/static/css/orders/menu.css">
 <script src="http://coffe.kazav.net:8889/socket.io/socket.io.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script>
 	var socket = io.connect('http://coffe.kazav.net:8889');
 	var branchID = {{ branchID }};

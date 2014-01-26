@@ -23,16 +23,29 @@
 		div#error p {padding: 2px;text-align:center;color:#B65BEB;}
 		div#order {margin: 50px ;width: 800px;float: left;}
 	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script src="/static/knob/js/jquery.knob.js"></script>
+	<script src="/static/sldr/jquery.sidr.min.js"></script>
 </head>
 <body>
 	<div id="ribbon">
 		<span id="who">{% if user.is_anonymous %}Not Logged In{% else %}You are logged in as: {{ user }}{% endif %}</span>
 		<a href="/orders/make_order">New Order</a> |
-		<a href="/king">linkB</a> | 
+		<a href="http://ynet.co.il">linkB</a> | 
 		{% if user.is_anonymous %}<a href="/account/login-client/?next=/orders/make_order">Login</a>{% else %}<a href="/account/logout/">Logout</a>{% endif %}
 	</div>
 	<div id="content">
 		{% block content %}{% endblock %}
 	</div>
+	<input type="text" value="1" class="dial" data-fgColor="#66CC66" data-angleOffset=-100 data-angleArc=200 data-displayPrevious=true data-thickness=".4" data-step=1 data-min=1 data-max=3> 
+	<input type="text" value="50" class="dial" data-fgColor="#66CC66" data-angleOffset=-100 data-angleArc=200 data-displayPrevious=true data-thickness=".4" data-step=50> 
+	<input type="text" value="1" class="dial" data-fgColor="#66CC66" data-angleOffset=-100 data-angleArc=200 data-displayPrevious=true data-thickness=".4" data-step=50> 
+
+<script>
+$(function() {
+    $(".dial").knob();
+});
+</script>
+
 </body>
 </html>

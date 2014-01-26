@@ -1,0 +1,1 @@
+ps -ef | egrep "node|0.0.0" | grep -v grep | awk '{print $2}' | xargs kill
