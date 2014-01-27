@@ -11,7 +11,10 @@
 
 <link rel="stylesheet" type="text/css" href="/static/css/orders/orders.css">
 <link rel="stylesheet" type="text/css" href="/static/css/orders/menu.css">
+<link rel="stylesheet" href="/static/sidr/stylesheets/jquery.sidr.dark.css">
+<script src="/static/sidr/jquery.sidr.min.js"></script>
 <script src="http://coffe.kazav.net:8889/socket.io/socket.io.js"></script>
+
 <script>
 	var socket = io.connect('http://coffe.kazav.net:8889');
 	var branchID = {{ branchID }};
@@ -91,10 +94,18 @@ $(document).ready(function() {
 	$("#gabi").click(function() {
 		socket.emit("checkOnline");
 	});
+
+	var menu_url="http://" + window.location.host + "/static/sidr/sidr_menu.html"
+	$("#menu_icon").sidr({
+		name: 'sidr',
+		source: menu_url
+ 	});
+
 	
 });
 
 </script>
+<img src="/static/img/orders/reload.png" onClick="window.location.reload()" width=50 height=50 id="reload_icon">
 <button type=button id=gabi class=gabi>check online</button>
  <div id="orders">
  </div>

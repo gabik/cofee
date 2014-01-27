@@ -18,3 +18,9 @@
     background: #f00;
 }
 
+#reload_icon {
+   position: absolute;
+   top: 31px;
+   right: 0px;
+
+}
