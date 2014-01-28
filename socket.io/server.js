@@ -80,7 +80,7 @@ io.sockets.on('connection', function (socket) {
 		var error_flag=0;
 		var error_msg="";
 		if (branchID in branches) {
-			tmp_filename = Math.random().toString(36).substring(8);
+			tmp_filename = Math.random().toString(36).substring(8) + ".tmp";
 			tmp_hash = Math.random().toString(36).substring(2);
 			fs.writeFile("./static/tmp/"+tmp_filename, tmp_hash, function(err) {
 				if(err) {

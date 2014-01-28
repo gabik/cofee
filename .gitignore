@@ -1,2 +1,2 @@
 *.pyc
-static/tmp/*
+static/tmp/*.tmp
