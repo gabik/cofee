@@ -84,30 +84,47 @@ io.sockets.on('connection', function (socket) {
 			tmp_hash = Math.random().toString(36).substring(2);
 			fs.writeFile("./static/tmp/"+tmp_filename, tmp_hash, function(err) {
 				if(err) {
-					error_flag=1;
-					error_msg=err;
+					socket.emit('raiseError', err);
+					console.log("Error... FILE: " + tmp_filename);
 				} else {
-					var json;
-					var branchSocketsArray = branches[branchID];
-					if (ostatus == "dodone") {
-						json = {id:oid};
-						for (var i = 0; i < branchSocketsArray.length; i++) {
-							branchSocketsArray[i].emit('deleteOrder', json);
-						}
-					} else {
-						var ost;
-						if (ostatus == "doready") {
-							ost = "ready";
-						} else if (ostatus == "dononready") {
-							ost = "nonready";
-						} else {
-							ost = "error";
-						}
-						json = {id:oid,status:ost};
+					var myKeyVals = { branchID: branchID, tmp_filename: tmp_filename, tmp_hash: tmp_hash, oid: oid, ostatus: ostatus };
+					var saveData = $.ajax({
+						type: 'POST',
+						url: "/orders/change_order_safe/",
+						data: myKeyVals,
+						dataType: "text",
+					});
+					saveData.success(function(resultData) { 
 						for (var i = 0; i < branchSocketsArray.length; i++) {
 							branchSocketsArray[i].emit('changeOrder', json);
 						}
-					}
+					});
+					saveData.error(function() { 
+						socket.emit('raiseError', "Ajax request issue.");
+						console.log("Error... Ajax....");
+					});
+
+					//var json;
+					//var branchSocketsArray = branches[branchID];
+					//if (ostatus == "dodone") {
+					//	json = {id:oid};
+					//	for (var i = 0; i < branchSocketsArray.length; i++) {
+					//		branchSocketsArray[i].emit('deleteOrder', json);
+					//	}
+					//} else {
+					//	var ost;
+					//	if (ostatus == "doready") {
+					//		ost = "ready";
+					//	} else if (ostatus == "dononready") {
+					//		ost = "nonready";
+					//	} else {
+					//		ost = "error";
+					//	}
+					//	json = {id:oid,status:ost};
+					//	for (var i = 0; i < branchSocketsArray.length; i++) {
+					//		branchSocketsArray[i].emit('changeOrder', json);
+					//	}
+					//}
 				}
 			}); 
 		} else {
@@ -117,7 +134,7 @@ io.sockets.on('connection', function (socket) {
 		
 		if (error_flag == 1) {
 			socket.emit('raiseError', error_msg);
-			console.log("Error... FILE: " + tmp_filename);
+			console.log("ERROR: " + error_msg);
 		}
 	});
 
