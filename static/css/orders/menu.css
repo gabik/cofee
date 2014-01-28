@@ -4,36 +4,95 @@
     height: auto;
     background: #aaf;
     margin-left: 50px;
+  border-bottom: 4px solid #656659;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+
+  background: #66665e;
+  background: -moz-linear-gradient(#66665e 0%, #45463d 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #66665e), color-stop(100%, #45463d));
+  background: -webkit-linear-gradient(#66665e 0%, #45463d 100%);
+  background: linear-gradient(#66665e 0%, #45463d 100%);
+  border: 1px solid #45463d;
+  -webkit-border-radius: 3px 3px 0 0;
+  -moz-border-radius: 3px 3px 0 0;
+  border-radius: 3px 3px 0 0;
+  padding: 15px 10px;
+
+  text-shadow: 0 -1px 1px #83bac8;
+  color: #ffffff;
+
 }
 #orderid, #orderstatus {
     position: relative;
     display: inline-block;
     font-weight: bold;
+
 }
-#doready {
+
+.menu_button {
+
     position: relative;
-    left: 30%;
-    width: 100px;
+    left: 10%;
+    width: 200px;
     height: 40px;
     margin-top: 10px;
-    background: #0f0;
+  font-size: 22px;
+  text-align: center;
+  text-shadow: 0 -1px 1px #83bac8;
+  color: #6982e8;
+  padding-top: 10px;
+}
+#doready {
+  background: #68d162;
+  background: -moz-linear-gradient(#68d162 0%, #42c53b 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #68d162), color-stop(100%, #42c53b));
+  background: -webkit-linear-gradient(#68d162 0%, #42c53b 100%);
+  background: linear-gradient(#68d162 0%, #42c53b 100%);
+
+
+}
+
+#doready:hover {
+  background: #5dce56;
+  background: -moz-linear-gradient(#5dce56 0%, #3eba37 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #5dce56), color-stop(100%, #3eba37));
+  background: -webkit-linear-gradient(#5dce56 0%, #3eba37 100%);
+  background: linear-gradient(#5dce56 0%, #3eba37 100%);
+
 }
 
 #dononready {
-    position: relative;
-    left: 30%;
-    width: 100px;
-    height: 40px;
-    margin-top: 10px;
-    background: #f00;
+  background: #eb715b;
+  background: -moz-linear-gradient(#eb715b 0%, #e54a2e 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #eb715b), color-stop(100%, #e54a2e));
+  background: -webkit-linear-gradient(#eb715b 0%, #e54a2e 100%);
+  background: linear-gradient(#eb715b 0%, #e54a2e 100%);
+}
+
+#dononready:hover {
+  background: #e9654d;
+  background: -moz-linear-gradient(#e9654d 0%, #e43e20 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #e9654d), color-stop(100%, #e43e20));
+  background: -webkit-linear-gradient(#e9654d 0%, #e43e20 100%);
+  background: linear-gradient(#e9654d 0%, #e43e20 100%);
 }
 
 #dodone {
-    position: relative;
-    left: 30%;
-    width: 100px;
-    height: 40px;
-    margin-top: 10px;
-    background: #fff;
+  background: #ebebf5;
+  background: -moz-linear-gradient(#ebebf5 0%, #c9c9e4 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ebebf5), color-stop(100%, #c9c9e4));
+  background: -webkit-linear-gradient(#ebebf5 0%, #c9c9e4 100%);
+  background: linear-gradient(#ebebf5 0%, #c9c9e4 100%);
+
 }
 
+#dodone:hover {
+  background: #e1e1f0;
+  background: -moz-linear-gradient(#e1e1f0 0%, #bfbfdf 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #e1e1f0), color-stop(100%, #bfbfdf));
+  background: -webkit-linear-gradient(#e1e1f0 0%, #bfbfdf 100%);
+  background: linear-gradient(#e1e1f0 0%, #bfbfdf 100%);
+
+}
