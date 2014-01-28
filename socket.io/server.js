@@ -76,6 +76,7 @@ io.sockets.on('connection', function (socket) {
 	// when the client change order he tells the server and we will send him update json
 	socket.on('updateOrder', function (branchID, oid, ostatus) {
 		// we tell the client to execute 'changeOrder' with json
+		var error_flag=0;
 		if (branchID in branches) {
 			var json;
 			var branchSocketsArray = branches[branchID];
@@ -98,6 +99,13 @@ io.sockets.on('connection', function (socket) {
 					branchSocketsArray[i].emit('changeOrder', json);
 				}
 			}
+		} else {
+			error_flag = 1;
+			error_msg = "Branch ID looks like disconnected... try to refresh your browser.";
+		}
+		
+		if (error_flag == 1) {
+			socket.emit('raiseError', error_msg);
 		}
 	});
 

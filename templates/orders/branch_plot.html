@@ -75,6 +75,11 @@
 		alert(ks);
 	});
 
+	socket.on('raiseError', function (msg) {
+		$("#orders").empty();
+		$("#orders").append("Error accured while getting data from the server: " + msg);
+	});
+
 	// listener, whenever the server emits 'updateusers', this updates the username list
 	socket.on('changeOrder', function(json) {
 		var orderid= json.id;
