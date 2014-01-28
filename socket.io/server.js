@@ -51,7 +51,7 @@ io.sockets.on('connection', function (socket) {
 		console.log("CURRENT BRANCHES: " + branches[branchID]);
 		// ask the client to run getAllObjects function with orders JSON
 		for (var i = 0; i < branchSocketsArray.length; i++) {
-			branchSocketsArray[i].emit('getAllOrders', ordersJson);
+			branchSocketsArray[i].emit('getAllOrders');
 		}
 	});
 

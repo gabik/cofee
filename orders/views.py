@@ -1,11 +1,15 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from orders.forms import new_order_form
+from orders.models import item_status,client_orders,item_size,item_strong,order_cart
 from account.models import branch_profile
 from django.forms.util import ErrorList
+import json
+from django.core import serializers
+from django.db.models import Q
 
 @login_required(login_url='/account/login-client/')
 def send_to_branch(request):
@@ -45,3 +49,44 @@ def my_branch(request):
 	if cur_profile:
 		c["branchID"] = cur_profile[0].id
 		return render(request, 'orders/branch_plot.html', c)
+	return HttpResponse("Illegal user.. contact support...")
+
+def map_status(order_status):
+	status = {}
+	status["Sent"] = "nonready"
+	status["Ready"] = "ready"
+	status["Branch"] = None
+	status["Done"] = None
+	status["Cart"] = None
+	status["Dropped"] = None
+	return status[str(order_status)]
+
+@login_required(login_url='/account/login-branch/')
+def all_branch_orders(request):
+	c = {}
+	ordersJson = {"count":0,"orders":[],"error":"1"};
+	cur_profile = branch_profile.objects.filter(user=request.user)
+	if cur_profile:
+		myOrders = client_orders.objects.filter(branch=cur_profile).filter(Q(status__status="Sent") | Q(status__status="Ready"))
+		if myOrders:
+			orders_array = []
+			for order in myOrders:
+				cur_order_json = {}
+				cur_status = map_status(str(order.status))
+				if not cur_status:
+					return HttpResponse(json.dumps(ordersJson), content_type="application/json")
+				cur_order_json["state"] = cur_status
+				cur_order_json["id"] = int(order.id)
+				orders_array.append(cur_order_json)
+			ordersJson = {}
+			ordersJson["count"] = len(orders_array)
+			ordersJson["orders"] = orders_array
+			ordersJson["error"] = 0
+		else:
+			ordersJson = {"count":0,"orders":[],"error":"0"};
+	return HttpResponse(json.dumps(ordersJson), content_type="application/json")
+
+
+@login_required(login_url='/account/login-branch/')
+def change_order_status(request):
+	return None

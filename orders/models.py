@@ -11,7 +11,7 @@ class item_status(models.Model):
 
 
 class client_orders(models.Model):
-  user = models.ForeignKey(User, unique=True)
+  user = models.ForeignKey(User, unique=False)
   status = models.ForeignKey(item_status, unique=False)
   branch = models.ForeignKey(branch_profile, unique=False)
 

@@ -31,16 +31,29 @@
 	});
 
 	// after connecting, we will get all orders with JSON format
-	socket.on('getAllOrders', function(ordersJson) {
-		$("#orders").empty();
-		var json = ordersJson; //JSON.parse(ordersJson);
-		var ordersCount = json.count;
-		var ordersArray = json.orders;
-		for (var i=0; i<ordersCount; i++) {
-			var orderState = ordersArray[i].state;
-			var orderID = ordersArray[i].id;
-			$("#orders").append("<div class=" + orderState  + " id=" + orderID + ">" + orderID + "</div>");
-		}
+	socket.on('getAllOrders', function() {
+		$.getJSON( "/orders/all_branch_orders/", function( ordersJson ) {		
+			$("#orders").empty();
+			var json = ordersJson; //JSON.parse(ordersJson);
+			var ordersCount = json.count;
+			if (ordersCount == 0) {
+				if (json.error == 0) {
+					$("#orders").append("No orders yet..");
+				} else {
+					$("#orders").append("Error accured while getting data from the server!!");
+				}
+			} else {
+				var ordersArray = json.orders;
+				for (var i=0; i<ordersCount; i++) {
+					var orderState = ordersArray[i].state;
+					var orderID = ordersArray[i].id;
+					$("#orders").append("<div class=" + orderState  + " id=" + orderID + ">" + orderID + "</div>");
+				}
+			}
+		})
+		.fail(function() {
+			$("#orders").append("Error accured while getting data from the server!!");
+		});
 	});
 
 	// listener, whenever the server emits 'updatechat', this updates the chat body
