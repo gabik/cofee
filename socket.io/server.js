@@ -1,6 +1,3 @@
-//for test-build JSON for first login
-ordersJson = {"count":6,"orders":[{"id":345,"state":"nonready"},{"id":346,"state":"ready"},{"id":545,"state":"nonready"},{"id":645,"state":"nonready"},{"id":745,"state":"ready"},{"id":845,"state":"nonready"}]};
-
 // Array remove function
 Array.prototype.remove = function(from, to) {
   var rest = this.slice((to || from) + 1 || this.length);
@@ -9,9 +6,11 @@ Array.prototype.remove = function(from, to) {
 };
 
 //var app = require('express').createServer();
+var fs = require('fs');
 var express = require("express");
 var app = express();
 var io = require('socket.io').listen(app.listen(8889));
+var $ = require('jquery');
 
 
 
@@ -56,11 +55,13 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	// check if branch is online
-	socket.on('checkOnline', function() {
+	socket.on('checkOnline', function(branchID) {
 		var json = {};
 		for (var k in branches) {
 			json[k] = k;
+			console.log(branches[k].length);
 		}
+		
 		socket.emit('onlineStatus', json);
 	});
 	// clear - for test
@@ -77,28 +78,38 @@ io.sockets.on('connection', function (socket) {
 	socket.on('updateOrder', function (branchID, oid, ostatus) {
 		// we tell the client to execute 'changeOrder' with json
 		var error_flag=0;
+		var error_msg="";
 		if (branchID in branches) {
-			var json;
-			var branchSocketsArray = branches[branchID];
-			if (ostatus == "dodone") {
-				json = {id:oid};
-				for (var i = 0; i < branchSocketsArray.length; i++) {
-					branchSocketsArray[i].emit('deleteOrder', json);
-				}
-			} else {
-				var ost;
-				if (ostatus == "doready") {
-					ost = "ready";
-				} else if (ostatus == "dononready") {
-					ost = "nonready";
+			tmp_filename = Math.random().toString(36).substring(8);
+			tmp_hash = Math.random().toString(36).substring(2);
+			fs.writeFile("./static/tmp/"+tmp_filename, tmp_hash, function(err) {
+				if(err) {
+					error_flag=1;
+					error_msg=err;
 				} else {
-					ost = "error";
+					var json;
+					var branchSocketsArray = branches[branchID];
+					if (ostatus == "dodone") {
+						json = {id:oid};
+						for (var i = 0; i < branchSocketsArray.length; i++) {
+							branchSocketsArray[i].emit('deleteOrder', json);
+						}
+					} else {
+						var ost;
+						if (ostatus == "doready") {
+							ost = "ready";
+						} else if (ostatus == "dononready") {
+							ost = "nonready";
+						} else {
+							ost = "error";
+						}
+						json = {id:oid,status:ost};
+						for (var i = 0; i < branchSocketsArray.length; i++) {
+							branchSocketsArray[i].emit('changeOrder', json);
+						}
+					}
 				}
-				json = {id:oid,status:ost};
-				for (var i = 0; i < branchSocketsArray.length; i++) {
-					branchSocketsArray[i].emit('changeOrder', json);
-				}
-			}
+			}); 
 		} else {
 			error_flag = 1;
 			error_msg = "Branch ID looks like disconnected... try to refresh your browser.";
@@ -106,6 +117,7 @@ io.sockets.on('connection', function (socket) {
 		
 		if (error_flag == 1) {
 			socket.emit('raiseError', error_msg);
+			console.log("Error... FILE: " + tmp_filename);
 		}
 	});
 
