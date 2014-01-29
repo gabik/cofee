@@ -60,6 +60,9 @@
 	// listener, whenever the server emits 'updatechat', this updates the chat body
 	socket.on('addOrder', function (json) {
         	$("#orders").append("<div class=nonready id=" + json + ">" + json + "</div>");
+			var audio = new Audio('/static/mp3/new_order.mp3');
+			audio.play();
+
 	});
 
 	socket.on('deleteOrder', function (json) {
