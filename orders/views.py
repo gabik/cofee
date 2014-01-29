@@ -10,6 +10,7 @@ from django.forms.util import ErrorList
 import json
 from django.core import serializers
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
 
 @login_required(login_url='/account/login-client/')
 def send_to_branch(request):
@@ -86,7 +87,28 @@ def all_branch_orders(request):
 			ordersJson = {"count":0,"orders":[],"error":"0"};
 	return HttpResponse(json.dumps(ordersJson), content_type="application/json")
 
+map_css_to_status = {'doready':'Ready', 'dononready':'NonReady', 'dodone':'Done'}
 
-@login_required(login_url='/account/login-branch/')
+@csrf_exempt
 def change_order_status(request):
-	return None
+	error=0
+	if request.POST:
+		if ("ostatus" in request.POST) and ("oid" in request.POST):
+			cur_order_q = client_orders.objects.filter(id=request.POST["oid"])
+			if cur_order_q:
+				cur_order = cur_order_q[0]
+				if request.POST["ostatus"] in map_css_to_status:
+					cur_order.status = item_status.objects.get(status=map_css_to_status[request.POST["ostatus"]])
+					cur_order.save()
+					ojson = {'state': str(cur_order.status)}
+					return HttpResponse(json.dumps(ojson), content_type="application/json")
+				else:
+					error=1
+			else:
+				error=2
+		else:
+			error=3
+	else:
+		error=4
+	error="Error with updating DB status of order. error number:" + str(error)
+	return HttpResponse(json.dumps({'error':error}), content_type="application/json")

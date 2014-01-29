@@ -10,9 +10,9 @@ var fs = require('fs');
 var express = require("express");
 var app = express();
 var io = require('socket.io').listen(app.listen(8889));
-var $ = require('jquery');
+var request = require('request');
 
-
+var djangoServer = "http://127.0.0.1:8888"
 
 // routing
 app.get('/', function (req, res) {
@@ -88,21 +88,33 @@ io.sockets.on('connection', function (socket) {
 					console.log("Error... FILE: " + tmp_filename);
 				} else {
 					var myKeyVals = { branchID: branchID, tmp_filename: tmp_filename, tmp_hash: tmp_hash, oid: oid, ostatus: ostatus };
-					var saveData = $.ajax({
-						type: 'POST',
-						url: "/orders/change_order_safe/",
-						data: myKeyVals,
-						dataType: "text",
-					});
-					saveData.success(function(resultData) { 
-						for (var i = 0; i < branchSocketsArray.length; i++) {
-							branchSocketsArray[i].emit('changeOrder', json);
+					request.post(
+						djangoServer + '/orders/change_order_safe/',
+						{ form: myKeyVals },
+						function (error, response, body) {
+							if (error) {
+								socket.emit('raiseError', "Ajax request issue.");
+								console.log("Error... Ajax has error: " + error);
+							} else if (response.statusCode != 200) {
+								socket.emit('raiseError', "Ajax request issue.");
+								console.log("Error... Ajax not 200: " + body);
+							} else {
+								var json;
+								var body_json = JSON.parse(body);
+								if (body_json.hasOwnProperty('error')) {
+									socket.emit('raiseError', body_json.error);
+									console.log("Error... Server gave error: " + body_json.error);
+								} else {
+									var json = {id:oid,status:body_json.state};
+									console.log(json);
+									var branchSocketsArray = branches[branchID];
+									for (var i = 0; i < branchSocketsArray.length; i++) {
+										branchSocketsArray[i].emit('changeOrder', json);
+									}
+								}
+							}
 						}
-					});
-					saveData.error(function() { 
-						socket.emit('raiseError', "Ajax request issue.");
-						console.log("Error... Ajax....");
-					});
+					);
 
 					//var json;
 					//var branchSocketsArray = branches[branchID];
