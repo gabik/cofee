@@ -32,12 +32,23 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='item_status',
+            fields=[
+                (u'id', models.AutoField(verbose_name=u'ID', serialize=False, auto_created=True, primary_key=True)),
+                ('status', models.CharField(max_length=50)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='client_orders',
             fields=[
                 (u'id', models.AutoField(verbose_name=u'ID', serialize=False, auto_created=True, primary_key=True)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, to_field=u'id', unique=True)),
-                ('status', models.CharField(max_length=100, null=True, blank=True)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, to_field=u'id')),
+                ('status', models.ForeignKey(to='orders.item_status', to_field=u'id')),
                 ('branch', models.ForeignKey(to='account.branch_profile', to_field=u'id')),
+                ('order_num', models.IntegerField()),
             ],
             options={
             },
@@ -47,7 +58,7 @@ class Migration(migrations.Migration):
             name='order_cart',
             fields=[
                 (u'id', models.AutoField(verbose_name=u'ID', serialize=False, auto_created=True, primary_key=True)),
-                ('order_num', models.ForeignKey(to='orders.client_orders', to_field=u'id')),
+                ('order', models.ForeignKey(to='orders.client_orders', to_field=u'id')),
                 ('qty', models.IntegerField()),
                 ('strong', models.ForeignKey(to='orders.item_strong', to_field=u'id')),
                 ('size', models.ForeignKey(to='orders.item_size', to_field=u'id')),

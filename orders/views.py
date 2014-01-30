@@ -11,6 +11,7 @@ import json
 from django.core import serializers
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
+from orders.data_sets import *
 
 @login_required(login_url='/account/login-client/')
 def send_to_branch(request):
@@ -33,8 +34,8 @@ def send_to_branch(request):
 		c['error']="Something got wrong with your request order... :("
 
 	form = new_order_form()
-	strong_choices = ([('1','Light'), ('2','Normal'),('3','Strong'), ])
-	size_choices = ([('1','Small'), ('2','Normal'),('3','Big'), ])
+	#strong_choices = ([('1','Light'), ('2','Normal'),('3','Strong'), ])
+	#size_choices = ([('1','Small'), ('2','Normal'),('3','Big'), ])
 	form.fields['branch'].choices = branch_profile.objects.all().values_list('id','header')
 	form.fields['strong'].choices = strong_choices
 	form.fields['size'].choices = size_choices
@@ -42,6 +43,7 @@ def send_to_branch(request):
 	c['form']=form
 
 	return render(request, 'orders/new_order.html',c)
+
 
 @login_required(login_url='/account/login-branch/')
 def my_branch(request):
@@ -52,15 +54,6 @@ def my_branch(request):
 		return render(request, 'orders/branch_plot.html', c)
 	return HttpResponse("Illegal user.. contact support...")
 
-def map_status(order_status):
-	status = {}
-	status["Sent"] = "nonready"
-	status["Ready"] = "ready"
-	status["Branch"] = None
-	status["Done"] = None
-	status["Cart"] = None
-	status["Dropped"] = None
-	return status[str(order_status)]
 
 @login_required(login_url='/account/login-branch/')
 def all_branch_orders(request):

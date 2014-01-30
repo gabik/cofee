@@ -7,8 +7,9 @@
 	    html, body, div {margin:0;padding:0;}
 		body {font-family: Verdana; font-size:10pt;}
 		span#who {float:right;}
-		div#ribbon {padding: 5px;background-color: #444;color:#DDD;}
+		div#ribbon {padding: 10px;background-color: #444;color:#DDD;}
 		div#ribbon a {color:#DDD; margin: 0px 15px 0px 15px;}
+		div#ribbon img {display:inline-block; vertical-align:middle}
 		div#content {padding: 5px 20px;}
 		div#login {margin: 100px auto;width: 300px;border: 1px solid #444;}
 		div#login h3 {background-color: #444;color:#EEE;padding:5px;font-weight:normal;margin:0;}
@@ -29,7 +30,7 @@
 	<div id="ribbon">
 		<span id="who">{% if user.is_anonymous %}Not Logged In{% else %}You are logged in as: {{ user }}{% endif %}</span>
                 <img src="/static/img/orders/menu_icon.png" id="menu_icon" width=20 height=20>
-		<a href="/orders/make_order">New Order</a> |
+		<a href="/orders/myBranch/">Orders System</a> |
 		<a href="http://ynet.co.il">linkB</a> | 
 		{% if user.is_anonymous %}<a href="/account/login-branch/?next=/orders/myBranch">Login</a>{% else %}<a href="/account/logout/">Logout</a>{% endif %}
 	</div>

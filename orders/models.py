@@ -14,6 +14,7 @@ class client_orders(models.Model):
   user = models.ForeignKey(User, unique=False)
   status = models.ForeignKey(item_status, unique=False)
   branch = models.ForeignKey(branch_profile, unique=False)
+  order_num = models.IntegerField()
 
   def __unicode__(self):
     return self.user.username + ": " + str(self.id) + "> " + str(self.status)
@@ -34,11 +35,11 @@ class item_strong(models.Model):
 
 
 class order_cart(models.Model):
-  order_num = models.ForeignKey(client_orders, unique=False)
+  order = models.ForeignKey(client_orders, unique=False)
   qty = models.IntegerField()
   strong = models.ForeignKey(item_strong, unique=False)
   size = models.ForeignKey(item_size, unique=False)
   
   def __unicode__(self):
-    return self.order_num.id + ": " + self.qty + "-" + self.strong + "-" + self.size
+    return str(self.order.id) + ": " + self.qty + "-" + self.strong + "-" + self.size
 

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Orders system test</title>
+	<link rel="stylesheet" href="/static/sidr/stylesheets/jquery.sidr.dark.css">
+	<style type="text/css" media="screen">
+	    html, body, div {margin:0;padding:0;}
+		body {font-family: Verdana; font-size:10pt;}
+		span#who {float:right;}
+		div#ribbon {padding: 5px;background-color: #444;color:#DDD;}
+		div#ribbon a {color:#DDD;}
+		div#content {padding: 5px 20px;}
+		div#login {margin: 100px auto;width: 300px;border: 1px solid #444;}
+		div#login h3 {background-color: #444;color:#EEE;padding:5px;font-weight:normal;margin:0;}
+		div#login div#form div,	div#login div#form  p {padding: 7px;text-align:center;}
+		div#form label {width:100px;display:block;float:left;text-align:right;}
+		th {background-color:#CCC;}
+		table {border-collapse: collapse;margin-top:20px;}
+		td, th {padding: 5px;border:1px solid #444;}
+		div.doc-image {float: left;margin-right:25px;margin-bottom:15px;}
+		div#error {margin: 30px auto;width: 500px;}
+		div#error h3 {background-color: #eee;color:#f11;padding:5px;font-weight:bold;margin:0;}
+		div#error p {padding: 2px;text-align:center;color:#B65BEB;}
+		div#order {margin: 50px ;width: 800px;float: left;}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script src="/static/knob/js/jquery.knob.js"></script>
+	<script src="/static/sidr/jquery.sidr.min.js"></script>
+	<script src="/static/sidr/jquery.touchwipe.min.js"></script>
+</head>
+<body>
+	<div id="ribbon">
+		<span id="who">{% if user.is_anonymous %}Not Logged In{% else %}You are logged in as: {{ user }}{% endif %}</span>
+		<a href="/orders/make_order">New Order</a> |
+		<a href="http://ynet.co.il">linkB</a> | 
+		{% if user.is_anonymous %}<a href="/account/login-client/?next=/orders/make_order">Login</a>{% else %}<a href="/account/logout/">Logout</a>{% endif %}
+	</div>
+	<div id="content">
+		{% block content %}{% endblock %}
+	</div>
+	<input type=image value=2 class="strong" data-fgColor="#66CC66" data-angleOffset=-100 data-angleArc=200 data-displayPrevious=true data-thickness=".4" data-step=1 data-min=1 data-max=3 src="/static/img/orders/regular.png" displayInput=false readOnly=true> 
+	<input type=image value=2 class="size" data-fgColor="#66CC66" data-angleOffset=-100 data-angleArc=200 data-displayPrevious=true data-thickness=".4" data-step=1 data-min=1 data-max=3 src="/static/img/orders/medium.png" displayInput=false readOnly=true> 
+	<input type="text" value="3" class="qty" data-fgColor="#66CC66" data-angleOffset=-100 data-angleArc=200 data-displayPrevious=true data-thickness=".4" data-step=1 data-min=1 data-max=10> 
+
+
+<script>
+$(function() {
+	$(".strong").knob({ 'value':'2' });
+	$(".size").knob();
+	$(".qty").knob();
+	$(".strong").click(function(){
+		switch ($(".strong").val()) {
+			case "1":
+				$(".strong")
+					.val("2")
+					.trigger('change');
+				$(".strong").attr('src', '/static/img/orders/regular.png');
+				break;
+			case "2":
+				$(".strong")
+					.val("3")
+					.trigger('change');
+				$(".strong").attr('src', '/static/img/orders/strong.png');
+				break;
+			case "3":
+				$(".strong")
+					.val("1")
+					.trigger('change');
+				$(".strong").attr('src', '/static/img/orders/light.png');
+				break;
+		}
+	});
+
+	$(".size").click(function(){
+		switch ($(".size").val()) {
+			case "1":
+				$(".size")
+					.val("2")
+					.trigger('change');
+				$(".size").attr('src', '/static/img/orders/medium.png');
+				break;
+			case "2":
+				$(".size")
+					.val("3")
+					.trigger('change');
+				$(".size").attr('src', '/static/img/orders/big.png');
+				break;
+			case "3":
+				$(".size")
+					.val("1")
+					.trigger('change');
+				$(".size").attr('src', '/static/img/orders/small.png');
+				break;
+		}
+	});
+
+	/* $(window).touchwipe({
+        wipeLeft: function() {
+          // Close
+          $.sidr('close', 'sidr-main');
+        },
+        wipeRight: function() {
+          // Open
+          $.sidr('open', 'sidr-main');
+        },
+        preventDefaultEvents: false
+      });
+	*/
+
+	$(document).ready(function() {
+	  $('#simple-menu').sidr();
+	});
+});
+</script>
+
+</body>
+</html>
