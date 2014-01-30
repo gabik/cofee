@@ -41,5 +41,5 @@ class order_cart(models.Model):
   size = models.ForeignKey(item_size, unique=False)
   
   def __unicode__(self):
-    return str(self.order.id) + ": " + self.qty + "-" + self.strong + "-" + self.size
+    return str(self.order.id) + ": " + str(self.qty) + "-" + str(self.strong) + "-" + str(self.size)
 

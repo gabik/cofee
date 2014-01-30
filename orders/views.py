@@ -13,6 +13,25 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from orders.data_sets import *
 
+
+def is_cart_full(cur_user):
+	error=0
+	if cur_user.is_authenticated():
+		cart_status_arr = item_status.objects.filter(status="Cart")
+		if cart_status_arr:
+			cart_status = cart_status_arr[0]
+			user_orders = client_orders.objects.filter(status=cart_status).filter(user=cur_user)
+			if user_orders:
+				return 1
+			else:
+				return 0
+		else:
+			return 2
+	else:
+		return 3
+	return 100
+
+
 @login_required(login_url='/account/login-client/')
 def send_to_branch(request):
 	c = {}
@@ -105,3 +124,29 @@ def change_order_status(request):
 		error=4
 	error="Error with updating DB status of order. error number:" + str(error)
 	return HttpResponse(json.dumps({'error':error}), content_type="application/json")
+
+@login_required(login_url='/account/login-client/')
+def get_user_cart(request):
+	error=is_cart_full(request.user)
+	if error < 2:
+		ordersJson = {'count':0}
+		if error == 1:
+			cart_status = item_status.objects.filter(status="Cart")[0]
+			user_order_cart = client_orders.objects.filter(status=cart_status).filter(user=request.user)[0]
+			user_orders = order_cart.objects.filter(order=user_order_cart)
+			if user_orders:
+				orders_array = []
+				for order in user_orders:
+					cur_order_json = {}
+					cur_order_json["qty"] = order.qty
+					cur_order_json["strong"] = order.strong.strong
+					cur_order_json["size"] = order.size.size
+					orders_array.append(cur_order_json)
+				ordersJson = {}
+				ordersJson["count"] = len(orders_array)
+				ordersJson["orders"] = orders_array
+				ordersJson["error"] = 0
+		return HttpResponse(json.dumps(ordersJson), content_type="application/json")
+	else:
+		error="Error getting your cart. Err#:" + str(error)
+		return HttpResponse(json.dumps({'error':error}), content_type="application/json")
