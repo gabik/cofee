@@ -8,8 +8,39 @@
   </div>
 {% endif %}
 {% if added %}
-	<h3> Items added to Cart </h3>
-	<p> You can add more items to cart, or send order by clicking on cart and choose "Checkout"</p>
+<style>
+  .addedToCartToggle { display: inline; float:right; }
+  #addedToCart { width: 240px; height: 135px; padding: 0.4em; position: relative; }
+  #addedToCart h3 { margin: 0; padding: 0.4em; text-align: center; }
+  #order {position: absolute; top:40px;}
+</style>
+
+<script>
+  $(function() {
+    function callback() {
+      setTimeout(function() {
+        $( "#addedToCart:visible" ).fadeOut();
+      }, 5000 );
+    };
+ 
+    $(document).ready(function() {
+		var options = {};
+		$( "#addedToCart" ).show( 1000, 'swing', callback);
+    });
+ 
+    $( "#addedToCart" ).hide();
+  });
+
+</script>
+<div class="addedToCartToggle">
+  <div id="addedToCart" class="ui-widget-content ui-corner-all">
+    <h3 class="ui-widget-header ui-corner-all">Item Added To Cart</h3>
+    <p>
+      You can add more items to cart, or send order by clicking on cart and choose "Checkout"
+    </p>
+  </div>
+</div>
+
 {% endif %}
 
 <div id="order">
