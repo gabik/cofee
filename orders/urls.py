@@ -6,4 +6,5 @@ urlpatterns = patterns('orders.views',
 	(r'all_branch_orders/$', 'all_branch_orders'),
 	(r'change_order_safe/$', 'change_order_status'),
 	(r'get_cart/$', 'get_user_cart'),
+	(r'get_cart_html/$', 'get_user_cart', {'html':True}),
 )

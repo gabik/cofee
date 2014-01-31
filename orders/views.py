@@ -14,52 +14,95 @@ from django.views.decorators.csrf import csrf_exempt
 from orders.data_sets import *
 
 
-def is_cart_full(cur_user):
-	error=0
+def get_cart_info(cur_user):
+	return_dict = {}
+	return_dict['error']=100
 	if cur_user.is_authenticated():
 		cart_status_arr = item_status.objects.filter(status="Cart")
 		if cart_status_arr:
 			cart_status = cart_status_arr[0]
-			user_orders = client_orders.objects.filter(status=cart_status).filter(user=cur_user)
-			if user_orders:
-				return 1
+			user_order = client_orders.objects.filter(status=cart_status).filter(user=cur_user)
+			if user_order:
+				return_dict['error']=False
+				return_dict['cart_full']=True
+				items = 0
+				user_orders = order_cart.objects.filter(order=user_order[0])
+				for order in user_orders:
+					items+=order.qty
+				return_dict['itemNum']=items
+				return_dict['orderNum']=user_order[0].order_num
+				return_dict['order_elem']=user_order[0]
+				return_dict['orders']=user_orders
 			else:
-				return 0
+				return_dict['error']=False
+				return_dict['cart_full']=False
+				return_dict['orders']=None
 		else:
-			return 2
+			return_dict['error']=2
 	else:
-		return 3
-	return 100
+		return_dict['error']=3
+	return return_dict
 
 
 @login_required(login_url='/account/login-client/')
 def send_to_branch(request):
 	c = {}
 	error_flag = None
-	if request.POST:
-		if 'branch' in request.POST:
-			cur_branch = branch_profile.objects.filter(id=request.POST['branch'])
-			if cur_branch is not None:
-				cur_branch = cur_branch[0]
-				c['order_id']=9
-				c['branchID']=cur_branch.id
-				return render(request, 'orders/sent_to_branch.html', c)
-			else:
-				error_flag=1
-		else:
-			error_flag=1
 
-	if error_flag:
-		c['error']="Something got wrong with your request order... :("
+	cart_ok=False
+	cart = get_cart_info(request.user)
+	if cart:
+		if 'error' in cart:
+			if cart['error']:
+				error_flag=" Cart Error:" + cart['error']
+			else:
+				cart_ok=True
+	else:
+		error_flag=" No Cart?!"
+
+	if cart_ok:
+		if request.POST:
+			form = new_order_form(request.POST)
+			form.fields['branch'].choices = branch_profile.objects.all().values_list('id','header')
+			form.fields['strong'].choices = item_strong.objects.all().values_list('id','strong')
+			form.fields['size'].choices = item_size.objects.all().values_list('id','size')
+			if form.is_valid():
+				cur_branch = branch_profile.objects.filter(id=request.POST['branch'])
+				if cur_branch is not None:
+					cur_branch = cur_branch[0]
+					#c['order_id']=cart.orderNum
+					c['branchID']=cur_branch.id
+					cur_strong = item_strong.objects.get(id=form.cleaned_data['strong'])
+					cur_size = item_size.objects.get(id=form.cleaned_data['size'])
+					new_cart_item=order_cart(order=cart['order_elem'], qty=form.cleaned_data['qty'], strong=cur_strong, size=cur_size)
+					new_cart_item.save()
+					c['added']=True
+					#return render(request, 'orders/sent_to_branch.html', c)
+				else:
+					error_flag="Selected Branch not exist.."
+			else:
+				error_flag="Invalid Form: " + str(form.errors)
 
 	form = new_order_form()
-	#strong_choices = ([('1','Light'), ('2','Normal'),('3','Strong'), ])
-	#size_choices = ([('1','Small'), ('2','Normal'),('3','Big'), ])
 	form.fields['branch'].choices = branch_profile.objects.all().values_list('id','header')
-	form.fields['strong'].choices = strong_choices
-	form.fields['size'].choices = size_choices
-
+	form.fields['strong'].choices = item_strong.objects.all().values_list('id','strong')
+	form.fields['size'].choices = item_size.objects.all().values_list('id','size')
 	c['form']=form
+
+	cart = get_cart_info(request.user)
+	if cart:
+		if 'error' in cart:
+			if cart['error']:
+				error_flag=" Cart #2 Error:" + cart['error']
+			else:
+				items = cart['itemNum']
+				if items > 0:
+					c["itemsNum"]=items
+	else:
+		error_flag=" No #2 Cart?!"
+
+	if error_flag:
+		c['error']="Something got wrong with your request order... :(" + str(error_flag)
 
 	return render(request, 'orders/new_order.html',c)
 
@@ -126,27 +169,54 @@ def change_order_status(request):
 	return HttpResponse(json.dumps({'error':error}), content_type="application/json")
 
 @login_required(login_url='/account/login-client/')
-def get_user_cart(request):
-	error=is_cart_full(request.user)
-	if error < 2:
-		ordersJson = {'count':0}
-		if error == 1:
-			cart_status = item_status.objects.filter(status="Cart")[0]
-			user_order_cart = client_orders.objects.filter(status=cart_status).filter(user=request.user)[0]
-			user_orders = order_cart.objects.filter(order=user_order_cart)
-			if user_orders:
-				orders_array = []
-				for order in user_orders:
-					cur_order_json = {}
-					cur_order_json["qty"] = order.qty
-					cur_order_json["strong"] = order.strong.strong
-					cur_order_json["size"] = order.size.size
-					orders_array.append(cur_order_json)
-				ordersJson = {}
-				ordersJson["count"] = len(orders_array)
-				ordersJson["orders"] = orders_array
-				ordersJson["error"] = 0
-		return HttpResponse(json.dumps(ordersJson), content_type="application/json")
+def get_user_cart(request, html=False):
+	error_flag=None
+	ordersJson = {'count':0}
+	cart = get_cart_info(request.user)
+	if cart:
+		if 'error' in cart:
+			if cart['error']:
+				error_flag=" Cart Error:" + cart['error']
+			else:
+				if cart['cart_full']:
+					if 'orders' in cart:
+						user_orders=cart['orders']
+						orders_array = []
+						for order in user_orders:
+							cur_order_json = {}
+							cur_order_json["qty"] = order.qty
+							cur_order_json["strong"] = order.strong.strong
+							cur_order_json["size"] = order.size.size
+							orders_array.append(cur_order_json)
+						ordersJson = {}
+						ordersJson["count"] = len(orders_array)
+						ordersJson["orders"] = orders_array
+						ordersJson["error"] = 0
+					else:
+						error_flag=" Cart full but no Orders"
 	else:
-		error="Error getting your cart. Err#:" + str(error)
-		return HttpResponse(json.dumps({'error':error}), content_type="application/json")
+		error_flag=" No Cart?!"
+
+	if html:
+		c={}
+		if not error_flag:
+			c['orders']=cart['orders']
+		return render(request, 'orders/client_cart.html',c)
+	else:
+		if error_flag:
+			error="Error getting your cart. Err#:" + str(error_flag)
+			return HttpResponse(json.dumps({'error':error}), content_type="application/json")
+		else:
+			return HttpResponse(json.dumps(ordersJson), content_type="application/json")
+
+
+@login_required(login_url='/account/login-client/')
+def get_user_cart_html(request):
+	error=is_cart_full(request.user)
+	c={}
+	if error == 1:
+		cart_status = item_status.objects.filter(status="Cart")[0]
+		user_order_cart = client_orders.objects.filter(status=cart_status).filter(user=request.user)[0]
+		user_orders = order_cart.objects.filter(order=user_order_cart)
+		c['orders']=user_orders
+	return render(request, 'orders/client_cart.html',c)

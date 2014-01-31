@@ -1,0 +1,18 @@
+Current Cart:
+
+<table>
+	<tr>
+		<th>Quantity</th>
+		<th>Strong</th>
+		<th>Size</th>
+		<th>Remove</th>
+	</tr>
+	{% for order in orders %}
+	<tr>
+		<td>{{ order.qty }}</td>
+		<td>{{ order.strong }}</td>
+		<td>{{ order.size }}</td>
+		<td>Del</td>
+	</tr>
+	{% endfor %}
+</table>

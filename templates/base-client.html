@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<title>Orders system test</title>
 	<link rel="stylesheet" href="/static/sidr/stylesheets/jquery.sidr.dark.css">
+	<link type="text/css" rel="stylesheet" href="/static/qtip/jquery.qtip.css" />
 	<style type="text/css" media="screen">
 	    html, body, div {margin:0;padding:0;}
 		body {font-family: Verdana; font-size:10pt;}
@@ -27,6 +28,65 @@
 	</style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 	<script src="/static/sidr/jquery.touchwipe.min.js"></script>
+	<script type="text/javascript" src="/static/qtip/jquery.qtip.js"></script>
+	<script type="text/javascript" src="/static/qtip/imagesloaded.pkg.min.js"></script>
+	<script>
+		$(document).ready(function()
+		{
+			$("#cart").qtip({
+				show: {
+					effect: function() {
+						$(this).slideDown();
+					},
+					event: 'click'
+				},
+				hide: {
+					effect: function() {
+						$(this).slideUp();
+					},
+					event: 'click'
+				},
+				content: {
+					text: function(event, api) {
+						$.ajax({
+							url: '/orders/get_cart_html/', // URL to the JSON file
+							type: 'GET', // POST or GET
+							//dataType: 'json', // Tell it we're retrieving JSON
+						})
+						.then(function(content) {
+							//var content = 'count is ' + data.count;
+
+							// Now we set the content manually (required!)
+							api.set('content.text', content);
+						}, function(xhr, status, error) {
+							// Upon failure... set the tooltip content to the status and error value
+							api.set('content.text', status + ': ' + error);
+						});
+						return 'Loading Cart...'; // Set some initial loading text
+					}
+				},
+				position: {
+					my: 'top right',  // Position my top left...
+					at: 'bottom right', // at the bottom right of...
+					target: 'mouse',
+					adjust: {
+						mouse: false
+					}
+				},
+				style: {
+					classes: 'qtip-jtools'
+				}
+
+			});
+		});
+/*
+position: {
+viewport: $(window)
+},
+style: 'qtip-wiki'
+});
+*/
+	</script>
 </head>
 <body>
 	<div id="ribbon">
@@ -36,8 +96,8 @@
 			{% else %}
 				{% if itemsNum %} {{ itemsNum }}  {% else %} 0 {% endif %} Items
 				<span id="cart"> 
-					{% if cart %}
-						<img src="/static/img/orders/emptyFull.png" width=25 height=25>
+					{% if itemsNum %}
+						<img src="/static/img/orders/fullCart.png" width=25 height=25 id="cart">
 					{% else %}
 						<img src="/static/img/orders/emptyCart.png" width=25 height=25>
 					{% endif %}
@@ -52,7 +112,6 @@
 	<div id="content">
 		{% block content %}{% endblock %}
 	</div>
-</script>
 
 </body>
 </html>

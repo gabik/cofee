@@ -7,6 +7,11 @@
  	<p>Please reorder..</p>       
   </div>
 {% endif %}
+{% if added %}
+	<h3> Items added to Cart </h3>
+	<p> You can add more items to cart, or send order by clicking on cart and choose "Checkout"</p>
+{% endif %}
+
 <div id="order">
 
 <form action='#' method='post'>{% csrf_token %}
