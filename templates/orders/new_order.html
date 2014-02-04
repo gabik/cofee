@@ -1,16 +1,10 @@
 {% extends "base-client.html" %}
 
 {% block content %}
-{% if error %}
-  <div id="error">
-        <h3>{{ error }}</h3>
- 	<p>Please reorder..</p>       
-  </div>
-{% endif %}
 {% if added %}
 <style>
   .addedToCartToggle { display: inline; float:right; }
-  #addedToCart { width: 240px; height: 135px; padding: 0.4em; position: relative; }
+  #addedToCart { width: 100px; height: 180px; padding: 0.4em; position: relative; }
   #addedToCart h3 { margin: 0; padding: 0.4em; text-align: center; }
   #order {position: absolute; top:40px;}
 </style>
@@ -44,10 +38,29 @@
 {% endif %}
 
 <div id="order">
+{% if error %}
+  <div id="error">
+        <h3>{{ error }}</h3>
+  </div>
+{% endif %}
 
 <form action='#' method='post'>{% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="Add To Cart">
+	<table border="0">
+	{% for field in form %}
+		{% if field.errors %}
+			<tr>
+				<td colspan=2>{{ field.errors }}</td>
+			</tr>
+		{% endif %}
+		<tr>
+			<td>{{ field.label_tag }}</td>
+			<td>{{ field }}</td>
+		</tr>
+	{% endfor %}
+		<tr>
+			<td colspan=2><center><input type="submit" value="Add To Cart"></center></td>
+		</tr>
+	<table>
 </form>
 
 </div>

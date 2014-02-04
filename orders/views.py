@@ -77,7 +77,7 @@ def send_to_branch(request):
 					new_cart_item=order_cart(order=cart['order_elem'], qty=form.cleaned_data['qty'], strong=cur_strong, size=cur_size)
 					new_cart_item.save()
 					c['added']=True
-					#return render(request, 'orders/sent_to_branch.html', c)
+					#error_flag="Selected Branch not exist.."
 				else:
 					error_flag="Selected Branch not exist.."
 			else:
