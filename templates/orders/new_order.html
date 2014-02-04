@@ -45,22 +45,20 @@
 {% endif %}
 
 <form action='#' method='post'>{% csrf_token %}
-	<table border="0">
 	{% for field in form %}
 		{% if field.errors %}
-			<tr>
-				<td colspan=2>{{ field.errors }}</td>
-			</tr>
+				{{ field.errors }}
+				<br>
 		{% endif %}
-		<tr>
-			<td>{{ field.label_tag }}</td>
-			<td>{{ field }}</td>
-		</tr>
+		{{ field.label_tag }}
+		{{ field }}
+		<br>
+		{% if field.help_text %}
+			{{ field.help_text }}
+			<BR>
+		{% endif %}
 	{% endfor %}
-		<tr>
 			<td colspan=2><center><input type="submit" value="Add To Cart"></center></td>
-		</tr>
-	<table>
 </form>
 
 </div>

@@ -1,18 +1,71 @@
-Current Cart:
-
-<table>
-	<tr>
-		<th>Quantity</th>
-		<th>Strong</th>
-		<th>Size</th>
-		<th>Remove</th>
-	</tr>
-	{% for order in orders %}
-	<tr>
-		<td>{{ order.qty }}</td>
-		<td>{{ order.strong }}</td>
-		<td>{{ order.size }}</td>
-		<td>Del</td>
-	</tr>
-	{% endfor %}
-</table>
+{% if orders %}
+	<style type="text/css">
+	.cart_button {
+		-moz-box-shadow:inset 0px 1px 0px 0px #c7c7c7;
+		-webkit-box-shadow:inset 0px 1px 0px 0px #c7c7c7;
+		box-shadow:inset 0px 1px 0px 0px #c7c7c7;
+		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #b3b3b3), color-stop(1, #f5f2f5) );
+		background:-moz-linear-gradient( center top, #b3b3b3 5%, #f5f2f5 100% );
+		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#b3b3b3', endColorstr='#f5f2f5');
+		background-color:#b3b3b3;
+		-webkit-border-top-left-radius:12px;
+		-moz-border-radius-topleft:12px;
+		border-top-left-radius:12px;
+		-webkit-border-top-right-radius:12px;
+		-moz-border-radius-topright:12px;
+		border-top-right-radius:12px;
+		-webkit-border-bottom-right-radius:12px;
+		-moz-border-radius-bottomright:12px;
+		border-bottom-right-radius:12px;
+		-webkit-border-bottom-left-radius:12px;
+		-moz-border-radius-bottomleft:12px;
+		border-bottom-left-radius:12px;
+		text-indent:0px;
+		border:2px solid #dbdbdb;
+		display:inline-block;
+		color:#807080;
+		font-family:Arial;
+		font-size:13px;
+		font-weight:bold;
+		font-style:normal;
+		height:20px;
+		line-height:20px;
+		width:85px;
+		text-decoration:none;
+		text-align:center;
+		text-shadow:1px 1px 0px #ebebeb;
+		margin-top: 10px;
+	}
+	.cart_button:hover {
+		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #f5f2f5), color-stop(1, #b3b3b3) );
+		background:-moz-linear-gradient( center top, #f5f2f5 5%, #b3b3b3 100% );
+		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f5f2f5', endColorstr='#b3b3b3');
+		background-color:#f5f2f5;
+	}.cart_button:active {
+		position:relative;
+		top:1px;
+	}
+	.checkout { margin-right:10px;}
+	</style>
+	Current Cart:
+	<table>
+		<tr>
+			<th>Quantity</th>
+			<th>Strong</th>
+			<th>Size</th>
+			<th>Remove</th>
+		</tr>
+		{% for order in orders %}
+		<tr>
+			<td>{{ order.qty }}</td>
+			<td>{{ order.strong }}</td>
+			<td>{{ order.size }}</td>
+			<td>Del</td>
+		</tr>
+		{% endfor %}
+	</table>
+	<button id="checkout_cart" type="button" class="checkout cart_button">Checkout</button>
+	<button id="clean_cart" type="button" class="cart_button">Remove All</button>
+{% else %}
+	Your cart is empty
+{% endif %}
