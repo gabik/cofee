@@ -1,41 +1,14 @@
 {% extends "base-client.html" %}
 
 {% block content %}
-{% if added %}
-<style>
-  .addedToCartToggle { display: inline; float:right; }
-  #addedToCart { width: 100px; height: 180px; padding: 0.4em; position: relative; }
-  #addedToCart h3 { margin: 0; padding: 0.4em; text-align: center; }
-  #order {position: absolute; top:40px;}
-</style>
 
 <script>
-  $(function() {
-    function callback() {
-      setTimeout(function() {
-        $( "#addedToCart:visible" ).fadeOut();
-      }, 5000 );
-    };
- 
-    $(document).ready(function() {
-		var options = {};
-		$( "#addedToCart" ).show( 1000, 'swing', callback);
-    });
- 
-    $( "#addedToCart" ).hide();
-  });
-
+	$(document).ready(function(){
+		$("#branch_select li").click(function(){
+			$("#branch_form").submit();
+		});
+	});
 </script>
-<div class="addedToCartToggle">
-  <div id="addedToCart" class="ui-widget-content ui-corner-all">
-    <h3 class="ui-widget-header ui-corner-all">Item Added To Cart</h3>
-    <p>
-      You can add more items to cart, or send order by clicking on cart and choose "Checkout"
-    </p>
-  </div>
-</div>
-
-{% endif %}
 
 <div id="order">
 {% if error %}
@@ -44,21 +17,22 @@
   </div>
 {% endif %}
 
-<form action='#' method='post'>{% csrf_token %}
-	{% for field in form %}
-		{% if field.errors %}
-				{{ field.errors }}
-				<br>
-		{% endif %}
-		{{ field.label_tag }}
-		{{ field }}
+Please select branch to make new order:
+<form id="branch_form" action='#' method='post'>{% csrf_token %}
+	{% if form.branch.errors %}
+		{{ form.branch.errors }}
 		<br>
-		{% if field.help_text %}
-			{{ field.help_text }}
-			<BR>
-		{% endif %}
+	{% endif %}
+	<ul id="branch_select">
+	{% for choice in form.branch %}
+		<li id="{{ choice.choice_value }}"> {{ choice.choice_label }} </li>
 	{% endfor %}
-			<td colspan=2><center><input type="submit" value="Add To Cart"></center></td>
+	<ul>
+	<br>
+	{% if form.branch.help_text %}
+		{{ form.branch.help_text }}
+	{% endif %}
+			<td colspan=2><center><input type="submit" value="Start ordering"></center></td>
 </form>
 
 </div>

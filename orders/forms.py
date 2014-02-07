@@ -2,7 +2,9 @@ from django import forms
 from account.models import branch_profile
 
 class new_order_form(forms.Form):
-	branch = forms.ChoiceField()
+	branch = forms.ChoiceField(widget=forms.RadioSelect())
+
+class new_item_form(forms.Form):
 	strong = forms.ChoiceField()
 	size = forms.ChoiceField()
 	qty = forms.IntegerField(min_value=1, max_value=10,help_text="Max 10 cups.", initial=1, label="Quantity")

@@ -64,6 +64,13 @@
 		</tr>
 		{% endfor %}
 	</table>
+	<script>
+		$(document).ready(function(){
+			$('#checkout_cart').click(function(){
+				window.location = '/orders/checkout';
+			});
+		});
+	</script>
 	<button id="checkout_cart" type="button" class="checkout cart_button">Checkout</button>
 	<button id="clean_cart" type="button" class="cart_button">Remove All</button>
 {% else %}

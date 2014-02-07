@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
-from orders.forms import new_order_form
+from orders.forms import new_order_form, new_item_form
 from orders.models import item_status,client_orders,item_size,item_strong,order_cart
 from account.models import branch_profile
 from django.forms.util import ErrorList
@@ -37,15 +37,54 @@ def get_cart_info(cur_user):
 				return_dict['error']=False
 				return_dict['cart_full']=False
 				return_dict['orders']=None
+			return_dict['status'] = cart_status_arr[0]
 		else:
 			return_dict['error']=2
 	else:
 		return_dict['error']=3
 	return return_dict
 
+@login_required(login_url='/account/login-client/')
+def new_order(request):
+	c = {}
+	error_flag = None
+	cart_ok=False
+	cart = get_cart_info(request.user)
+	if cart:
+		if cart['cart_full']:
+			if cart['itemNum'] > 0:
+				return HttpResponseRedirect	('./order_items')
+			else:
+				cart['order_elem'].delete()
+
+		if request.POST:
+			form = new_order_form(request.POST)
+			form.fields['branch'].choices = branch_profile.objects.all().values_list('id','header')
+			if form.is_valid():
+				cur_branch = branch_profile.objects.filter(id=request.POST['branch'])
+				if cur_branch is not None:
+					cur_branch = cur_branch[0]
+					new_order = client_orders(user=request.user, status=cart['status'], branch=cur_branch, order_num=0)
+					new_order.save()
+					return HttpResponseRedirect	('./order_items')
+					#return render(request, 'orders/add_items.html',c)
+				else:
+					error_flag="Selected Branch not exist.."
+			else:
+				error_flag="Invalid Form: " + str(form.errors)
+	else:
+		error_flag = "No cart object (new_order view)"
+	form = new_order_form()
+	form.fields['branch'].choices = branch_profile.objects.all().values_list('id','header')
+	c['form']=form
+	if error_flag:
+		c['error']="Something got wrong with your request order... :(" + str(error_flag)
+
+	return render(request, 'orders/new_order.html',c)
+
 
 @login_required(login_url='/account/login-client/')
-def send_to_branch(request):
+def select_items(request):
 	c = {}
 	error_flag = None
 
@@ -61,17 +100,12 @@ def send_to_branch(request):
 		error_flag=" No Cart?!"
 
 	if cart_ok:
-		if request.POST:
-			form = new_order_form(request.POST)
-			form.fields['branch'].choices = branch_profile.objects.all().values_list('id','header')
-			form.fields['strong'].choices = item_strong.objects.all().values_list('id','strong')
-			form.fields['size'].choices = item_size.objects.all().values_list('id','size')
-			if form.is_valid():
-				cur_branch = branch_profile.objects.filter(id=request.POST['branch'])
-				if cur_branch is not None:
-					cur_branch = cur_branch[0]
-					#c['order_id']=cart.orderNum
-					c['branchID']=cur_branch.id
+		if cart['cart_full']:
+			if request.POST:
+				form = new_item_form(request.POST)
+				form.fields['strong'].choices = item_strong.objects.all().values_list('id','strong')
+				form.fields['size'].choices = item_size.objects.all().values_list('id','size')
+				if form.is_valid():
 					cur_strong = item_strong.objects.get(id=form.cleaned_data['strong'])
 					cur_size = item_size.objects.get(id=form.cleaned_data['size'])
 					new_cart_item=order_cart(order=cart['order_elem'], qty=form.cleaned_data['qty'], strong=cur_strong, size=cur_size)
@@ -79,12 +113,11 @@ def send_to_branch(request):
 					c['added']=True
 					#error_flag="Selected Branch not exist.."
 				else:
-					error_flag="Selected Branch not exist.."
-			else:
-				error_flag="Invalid Form: " + str(form.errors)
+					error_flag="Invalid Form: " + str(form.errors)
+		else:
+			return HttpResponseRedirect	('./make_order')
 
-	form = new_order_form()
-	form.fields['branch'].choices = branch_profile.objects.all().values_list('id','header')
+	form = new_item_form()
 	form.fields['strong'].choices = item_strong.objects.all().values_list('id','strong')
 	form.fields['size'].choices = item_size.objects.all().values_list('id','size')
 	c['form']=form
@@ -95,16 +128,19 @@ def send_to_branch(request):
 			if cart['error']:
 				error_flag=" Cart #2 Error:" + cart['error']
 			else:
-				items = cart['itemNum']
+				items = 0
+				if cart['cart_full']:
+					items = cart['itemNum']
 				if items > 0:
 					c["itemsNum"]=items
+				c['branch_header'] = cart['order_elem'].branch.header
 	else:
 		error_flag=" No #2 Cart?!"
 
 	if error_flag:
 		c['error']="Something got wrong with your request order... :(" + str(error_flag)
 
-	return render(request, 'orders/new_order.html',c)
+	return render(request, 'orders/add_items.html',c)
 
 
 @login_required(login_url='/account/login-branch/')
