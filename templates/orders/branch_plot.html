@@ -39,7 +39,7 @@
 			var ordersCount = json.count;
 			if (ordersCount == 0) {
 				if (json.error == 0) {
-					$("#orders").append("No orders yet..");
+					$("#orders").append("<div id=noorders>No orders yet..</div>");
 				} else {
 					$("#orders").append("Error accured while getting data from the server!!");
 				}
@@ -59,6 +59,7 @@
 
 	// listener, whenever the server emits 'updatechat', this updates the chat body
 	socket.on('addOrder', function (json) {
+			$("#noorders").remove();
         	$("#orders").append("<div class=nonready id=" + json + ">" + json + "</div>");
 			var audio = new Audio('/static/mp3/new_order.mp3');
 			audio.play();

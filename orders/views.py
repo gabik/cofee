@@ -13,6 +13,7 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from orders.data_sets import *
 
+Sent_Status = "Sent"
 
 def get_cart_info(cur_user):
 	return_dict = {}
@@ -141,6 +142,45 @@ def select_items(request):
 		c['error']="Something got wrong with your request order... :(" + str(error_flag)
 
 	return render(request, 'orders/add_items.html',c)
+
+
+@login_required(login_url='/account/login-branch/')
+def checkout_cart(request):
+	c = {}
+	cart = get_cart_info(request.user)
+	if cart:
+		if 'error' in cart:
+			if cart['error']:
+				error_flag=" Cart Error:" + cart['error']
+			else:
+				items = 0
+				if cart['cart_full']:
+					items = cart['itemNum']
+				if items > 0:
+					if 'order_elem' in cart:
+						cur_order = cart['order_elem']
+						sent_arr = item_status.objects.filter(status=Sent_Status)
+						if sent_arr:
+							cur_order.status = sent_arr[0]
+							cur_order.save()
+							c["itemsNum"]=items
+							c['order_elem'] = cur_order
+							return render(request, 'orders/sent_to_branch.html',c)
+						else:
+							error_flag="No Sent status at DB"
+					else:
+						error_flag=" cart has no order element"
+				else:
+					error_flag=" No items "
+		else:
+			error_flag=" missing error field in Cart?!"
+	else:
+		error_flag=" No Cart?!"
+
+	if error_flag:
+		c['error']="Something got wrong with your order checkout process... :(" + str(error_flag)
+
+	return HttpResponseRedirect ('../make_order')
 
 
 @login_required(login_url='/account/login-branch/')

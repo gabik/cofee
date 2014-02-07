@@ -48,9 +48,9 @@
 	<h2>
 		ordering from {{ branch_header }}
 	</h2>
-</div
+</div>
 
-<form action='#' method='post'>{% csrf_token %}
+<form action="#" method="post">{% csrf_token %}
 	{% for field in form %}
 		{% if field.errors %}
 				{{ field.errors }}

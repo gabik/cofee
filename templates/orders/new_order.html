@@ -4,8 +4,12 @@
 
 <script>
 	$(document).ready(function(){
-		$("#branch_select li").click(function(){
-			$("#branch_form").submit();
+		$("#branch_select li ").click(function(){
+			$('#branch_form').submit();
+		});
+		$("#branch_select li ").click(function(){
+			$(this).find('input').attr('checked', true);
+			$(this).find('input').click();
 		});
 	});
 </script>
@@ -14,6 +18,7 @@
 #branch_select { width:290px; font-family:Georgia, Times, serif; font-size:16px;}
 #branch_select ul { list-style: none; padding: 0px;}
 #branch_select ul  li { display:block; text-decoration:none; color:#FFF; background-color:#304045; line-height:35px; border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:#CCCCCC; padding-left:10px; cursor:pointer; }
+#branch_select ul li input{ display: none; }
 </style>
 
 <div id="order">
@@ -30,11 +35,14 @@ Please select branch to make new order:
 		<br>
 	{% endif %}
 	<div id="branch_select">
+		{{ form.branch }}
+<!--
 		<ul>
 		{% for choice in form.branch %}
 			<li id="{{ choice.choice_value }}"> {{ choice.choice_label }} </li>
 		{% endfor %}
 		<ul>
+-->
 	</div>
 	{% if form.branch.help_text %}
 		{{ form.branch.help_text }}

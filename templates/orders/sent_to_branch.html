@@ -14,11 +14,15 @@
         var socket = io.connect('http://coffe.kazav.net:8889');
 
 	socket.on('connect', function(){
-		socket.emit('addOrder', {{ branchID }}, {{ order_id }});
+		socket.emit('addOrder', {{ order_elem.branch.id }}, {{ order_elem.id }});
 	});
 
 </script>
-Thank you for your order, bitch!
+Thank you for your order.<BR>
+Your order number is {{ order_elem.id }}<BR>
+Your order sent to {{ order_elem.branch.header }}, on {{ order_elem.branch.address }}.<BR>
+Your order contains {{ itemsNum }} items.
+
 </div>
 {% endblock %}
 
