@@ -10,6 +10,12 @@
 	});
 </script>
 
+<style>
+#branch_select { width:290px; font-family:Georgia, Times, serif; font-size:16px;}
+#branch_select ul { list-style: none; padding: 0px;}
+#branch_select ul  li { display:block; text-decoration:none; color:#FFF; background-color:#304045; line-height:35px; border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:#CCCCCC; padding-left:10px; cursor:pointer; }
+</style>
+
 <div id="order">
 {% if error %}
   <div id="error">
@@ -23,16 +29,16 @@ Please select branch to make new order:
 		{{ form.branch.errors }}
 		<br>
 	{% endif %}
-	<ul id="branch_select">
-	{% for choice in form.branch %}
-		<li id="{{ choice.choice_value }}"> {{ choice.choice_label }} </li>
-	{% endfor %}
-	<ul>
-	<br>
+	<div id="branch_select">
+		<ul>
+		{% for choice in form.branch %}
+			<li id="{{ choice.choice_value }}"> {{ choice.choice_label }} </li>
+		{% endfor %}
+		<ul>
+	</div>
 	{% if form.branch.help_text %}
 		{{ form.branch.help_text }}
 	{% endif %}
-			<td colspan=2><center><input type="submit" value="Start ordering"></center></td>
 </form>
 
 </div>
